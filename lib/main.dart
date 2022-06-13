@@ -1,5 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
+import 'package:poetry_publisher/admin_panel/ad_home.dart';
+import 'package:poetry_publisher/screens/gazal.dart';
+import 'package:poetry_publisher/screens/kata.dart';
 import 'package:poetry_publisher/screens/shair.dart';
 
 void main() async {
@@ -14,7 +18,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -29,7 +33,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: login(),
+      home: A_home(),
     );
   }
 }
@@ -42,9 +46,10 @@ class login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 4,
+      length: 5,
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: kcolor,
           title: const Text("شاعری پبلشر"),
           // leading: ,
           actions: [
@@ -54,32 +59,34 @@ class login extends StatelessWidget {
           bottom: TabBar(
               indicatorColor: Colors.white,
               labelStyle: TextStyle(
-                  fontSize: 22.0, fontFamily: 'Family Name'), //For Selected tab
+                  fontSize: 18.0, fontFamily: 'Family Name'), //For Selected tab
               unselectedLabelStyle:
-                  TextStyle(fontSize: 16.0, fontFamily: 'Family Name'),
+                  TextStyle(fontSize: 14.0, fontFamily: 'Family Name'),
               tabs: [
                 Tab(
-                  text: "شعر ",
+                  text: "شعر",
                 ),
                 Tab(
-                  text: "قطعہ ",
+                  text: "قطعہ",
                 ),
                 Tab(
-                  text: "غزل ",
+                  text: "غزل",
                 ),
                 Tab(
-                  text: "شاعر ",
+                  text: "شاعر",
+                ),
+                Tab(
+                  text: "عنوان",
                 )
               ]),
         ),
         body: TabBarView(
           children: [
             shair(),
+            kataa(),
+            gazal(),
             Center(
-              child: Text("data2"),
-            ),
-            Center(
-              child: Text("data3"),
+              child: Text("data4"),
             ),
             Center(
               child: Text("data4"),

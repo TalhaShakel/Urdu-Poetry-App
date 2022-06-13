@@ -4,18 +4,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-Color kcolor = Color.fromARGB(255, 7, 73, 206);
+// Color kcolor = Color.fromARGB(255, 7, 73, 206);
 
-class shair extends StatelessWidget {
-  shair({Key? key}) : super(key: key);
+class gazal extends StatelessWidget {
+  gazal({Key? key}) : super(key: key);
   final Stream<QuerySnapshot> _usersStream =
-      FirebaseFirestore.instance.collection('poetry').snapshots();
-
+      FirebaseFirestore.instance.collection('gazal').snapshots();
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
-      // appBar: AppBar(),
       body: StreamBuilder<QuerySnapshot>(
           stream: _usersStream,
           builder:
