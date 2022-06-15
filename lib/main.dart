@@ -4,6 +4,7 @@ import 'package:get/route_manager.dart';
 import 'package:poetry_publisher/admin_panel/ad_home.dart';
 import 'package:poetry_publisher/screens/gazal.dart';
 import 'package:poetry_publisher/screens/kata.dart';
+import 'package:poetry_publisher/screens/poet_name.dart';
 import 'package:poetry_publisher/screens/shair.dart';
 
 void main() async {
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: A_home(),
+      home: login(),
     );
   }
 }
@@ -85,9 +86,7 @@ class login extends StatelessWidget {
             shair(),
             kataa(),
             gazal(),
-            Center(
-              child: Text("data4"),
-            ),
+            P_name(),
             Center(
               child: Text("data4"),
             )

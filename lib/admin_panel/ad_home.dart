@@ -50,7 +50,19 @@ class A_shair extends StatelessWidget {
     try {
       await db
           .collection("poetry")
-          .add({"p_name": name.text, "poetry": poetry.text});
+          .add({"p_name": name.text.trim(), "poetry": poetry.text.trim()}).then(
+              (value) {
+        poetry.clear();
+        name.clear();
+      });
+      Fluttertoast.showToast(
+          msg: "Posted",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 6,
+          backgroundColor: Colors.blue,
+          textColor: Colors.white,
+          fontSize: 16.0);
       print("User is register");
     } catch (e) {
       Fluttertoast.showToast(
@@ -168,7 +180,19 @@ class A_kata extends StatelessWidget {
     try {
       await db
           .collection("kata")
-          .add({"p_name": name.text, "poetry": poetry.text});
+          .add({"p_name": name.text.trim(), "poetry": poetry.text.trim()}).then(
+              (value) {
+        poetry.clear();
+        name.clear();
+      });
+      Fluttertoast.showToast(
+          msg: "Posted",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 6,
+          backgroundColor: Colors.blue,
+          textColor: Colors.white,
+          fontSize: 16.0);
       print("User is register");
     } catch (e) {
       Fluttertoast.showToast(
@@ -284,7 +308,19 @@ class A_gazal extends StatelessWidget {
     try {
       await db
           .collection("gazal")
-          .add({"p_name": name.text, "poetry": poetry.text});
+          .add({"p_name": name.text.trim(), "poetry": poetry.text.trim()}).then(
+              (value) {
+        poetry.clear();
+        name.clear();
+      });
+      Fluttertoast.showToast(
+          msg: "Posted",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 6,
+          backgroundColor: Colors.blue,
+          textColor: Colors.white,
+          fontSize: 16.0);
       print("User is register");
     } catch (e) {
       Fluttertoast.showToast(
