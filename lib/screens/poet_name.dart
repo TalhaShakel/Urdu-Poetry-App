@@ -7,7 +7,7 @@ import 'package:poetry_publisher/screens/single%20Poet/single_poet.dart';
 class P_name extends StatelessWidget {
   P_name({Key? key}) : super(key: key);
   final Stream<QuerySnapshot> _usersStream =
-      FirebaseFirestore.instance.collection('kata').snapshots();
+      FirebaseFirestore.instance.collection('poetry').snapshots();
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -28,22 +28,17 @@ class P_name extends StatelessWidget {
             return GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     childAspectRatio: 2.75,
-                    mainAxisSpacing: 10,
-                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 5,
+                    crossAxisSpacing: 2,
                     crossAxisCount: 3),
                 itemCount: snapshot.data!.docs.length,
                 itemBuilder: (context, index) {
                   var data = snapshot.data?.docs[index];
-// Text(snapshot.data!.docs[index]["shair"].toString())
+
                   return InkWell(
                     onTap: () {
-                      // if (data!["p_name"] == data["p_name"]) {
-                      print(data?["p_name"] + " ye hai");
-                      // }
                       Get.to(single_poet_home(
-                        name: data!["p_name"],
-
-                        // id: data["p_name"]
+                        name: data?["p_name"],
                       ));
                     },
                     child: Card(
@@ -52,10 +47,10 @@ class P_name extends StatelessWidget {
                         textDirection: TextDirection.rtl,
                         child: Center(
                           child: Text(
-                            data!["p_name"].toString().trim(),
+                            "${data?["p_name"]}".trim(),
                             style: TextStyle(
                                 color: Color.fromARGB(255, 0, 0, 0),
-                                fontSize: 18),
+                                fontSize: 15),
                           ),
                         ),
                       ),

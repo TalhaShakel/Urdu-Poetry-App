@@ -1,11 +1,22 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:poetry_publisher/admin_panel/ad_home.dart';
+import 'package:poetry_publisher/ruff.dart';
+import 'package:poetry_publisher/screens/Auth%20Screens/signing.dart';
+import 'package:poetry_publisher/screens/Auth%20Screens/profile.dart';
 import 'package:poetry_publisher/screens/gazal.dart';
 import 'package:poetry_publisher/screens/kata.dart';
 import 'package:poetry_publisher/screens/poet_name.dart';
 import 'package:poetry_publisher/screens/shair.dart';
+import 'package:poetry_publisher/screens/trending/trending_home.dart';
+import 'package:poetry_publisher/screens/unwaan/unwan.dart';
+import 'package:poetry_publisher/screens/user%20upload%20poetry/upload_home.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,28 +45,43 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: login(),
+      home: ruff(),
     );
   }
 }
 
-class login extends StatelessWidget {
+class home_page extends StatelessWidget {
   var tabController;
 
-  login({Key? key}) : super(key: key);
+  home_page({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 5,
       child: Scaffold(
+        drawer: Drawer(
+            // child: profile(),
+            ),
         appBar: AppBar(
           backgroundColor: kcolor,
           title: const Text("شاعری پبلشر"),
           // leading: ,
           actions: [
             IconButton(onPressed: () {}, icon: Icon(Icons.search)),
-            IconButton(onPressed: () {}, icon: Icon(Icons.apps_rounded))
+            IconButton(
+                onPressed: () async {
+                  var userData = await FirebaseFirestore.instance
+                      .collection('user')
+                      .doc(FirebaseAuth.instance.currentUser!.uid)
+                      .get();
+                  var email = userData["email"];
+                  var name = userData["displayName"];
+                  print(email);
+
+                  Get.to(profile(email: email, name: name));
+                },
+                icon: Icon(Icons.person))
           ],
           bottom: TabBar(
               indicatorColor: Colors.white,
@@ -82,15 +108,7 @@ class login extends StatelessWidget {
               ]),
         ),
         body: TabBarView(
-          children: [
-            shair(),
-            kataa(),
-            gazal(),
-            P_name(),
-            Center(
-              child: Text("data4"),
-            )
-          ],
+          children: [shair(), kataa(), gazal(), P_name(), unwaan()],
         ),
       ),
     );
