@@ -10,6 +10,7 @@ import 'package:like_button/like_button.dart';
 import 'package:poetry_publisher/screens/Auth%20Screens/login.dart';
 import 'package:poetry_publisher/screens/Auth%20Screens/signing.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class maincontainer extends StatelessWidget {
   String poetry;
@@ -77,11 +78,19 @@ class maincontainer extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 LikeButton(
-                    // onTap: (isLiked) async {
-                    //   // isLiked == false ? Get.to(login()) : isLiked == true;
-                    //   return isLiked;
-                    // },
-                    ),
+                  onTap: (isLiked) async {
+                    // isLiked == false ? Get.to(login()) : isLiked == true;
+
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+
+                    var login3 = prefs.getString("email");
+                    if (login3 == null) {
+                      Get.to(login());
+                    }
+                    return login3 != null ? !isLiked : isLiked;
+                  },
+                ),
                 // Container(height: 10, width: 10, child: CommentBox()),
                 IconButton(
                     onPressed: () {
