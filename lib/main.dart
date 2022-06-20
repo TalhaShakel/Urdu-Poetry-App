@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:poetry_publisher/admin_panel/ad_home.dart';
 import 'package:poetry_publisher/ruff.dart';
+import 'package:poetry_publisher/screens/Auth%20Screens/login.dart';
 import 'package:poetry_publisher/screens/Auth%20Screens/signing.dart';
 import 'package:poetry_publisher/screens/Auth%20Screens/profile.dart';
 import 'package:poetry_publisher/screens/gazal.dart';
@@ -17,6 +18,7 @@ import 'package:poetry_publisher/screens/shair.dart';
 import 'package:poetry_publisher/screens/trending/trending_home.dart';
 import 'package:poetry_publisher/screens/unwaan/unwan.dart';
 import 'package:poetry_publisher/screens/user%20upload%20poetry/upload_home.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -71,15 +73,26 @@ class home_page extends StatelessWidget {
             IconButton(onPressed: () {}, icon: Icon(Icons.search)),
             IconButton(
                 onPressed: () async {
-                  var userData = await FirebaseFirestore.instance
-                      .collection('user')
-                      .doc(FirebaseAuth.instance.currentUser!.uid)
-                      .get();
-                  var email = userData["email"];
-                  var name = userData["displayName"];
-                  print(email);
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
 
-                  Get.to(profile(email: email, name: name));
+                  var login3 = prefs.getString("email");
+                  var userData;
+                  var email;
+                  var name;
+                  if (login3 != null) {
+                    userData = await FirebaseFirestore.instance
+                        .collection('user')
+                        .doc(FirebaseAuth.instance.currentUser!.uid)
+                        .get();
+                    email = userData["email"];
+                    name = userData["displayName"];
+                    print(email);
+                  }
+
+                  Get.to(login3 == null
+                      ? login()
+                      : profile(email: email, name: name));
                 },
                 icon: Icon(Icons.person))
           ],

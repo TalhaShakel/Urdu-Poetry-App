@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:poetry_publisher/ruff.dart';
 import 'package:poetry_publisher/screens/widgets/profile_textfield.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class profile extends StatelessWidget {
   late String name, email;
@@ -76,7 +79,16 @@ class profile extends StatelessWidget {
                 child: Container(
                     width: 200,
                     child: ElevatedButton(
-                        onPressed: () {}, child: Text("Log Out"))),
+                        onPressed: () async {
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          await prefs.remove('email').then((value) async {
+                            await FirebaseAuth.instance.signOut();
+                          });
+                          await Future.delayed(Duration(seconds: 2))
+                              .then((value) => Get.to(ruff()));
+                        },
+                        child: Text("Log Out"))),
               )
             ],
           ),
