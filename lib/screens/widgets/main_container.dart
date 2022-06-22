@@ -1,5 +1,3 @@
-// import 'dart:html';
-
 import 'package:comment_box/comment/comment.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -79,11 +77,8 @@ class maincontainer extends StatelessWidget {
               children: [
                 LikeButton(
                   onTap: (isLiked) async {
-                    // isLiked == false ? Get.to(login()) : isLiked == true;
-
                     SharedPreferences prefs =
                         await SharedPreferences.getInstance();
-
                     var login3 = prefs.getString("email");
                     if (login3 == null) {
                       Get.to(login());

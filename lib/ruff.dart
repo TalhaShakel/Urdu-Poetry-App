@@ -4,8 +4,10 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:poetry_publisher/main.dart';
+import 'package:poetry_publisher/screens/Auth%20Screens/login.dart';
 import 'package:poetry_publisher/screens/trending/trending_home.dart';
 import 'package:poetry_publisher/screens/user%20upload%20poetry/upload_home.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ruff extends StatefulWidget {
   ruff({Key? key}) : super(key: key);
@@ -16,6 +18,7 @@ class ruff extends StatefulWidget {
 
 class _ruffState extends State<ruff> {
   int _page = 0;
+  var login3;
 
   GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
 
@@ -37,7 +40,11 @@ class _ruffState extends State<ruff> {
         backgroundColor: Colors.blueAccent,
         animationCurve: Curves.easeInOut,
         animationDuration: Duration(milliseconds: 600),
-        onTap: (index) {
+        onTap: (index) async {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+
+          login3 = prefs.getString("email");
+
           setState(() {
             _page = index;
           });
@@ -47,7 +54,9 @@ class _ruffState extends State<ruff> {
       body: _page == 0
           ? home_page()
           : _page == 1
-              ? upload()
+              ? login3 == null
+                  ? login()
+                  : upload()
               : _page == 2
                   ? trending()
                   : trending(),
