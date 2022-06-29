@@ -5,8 +5,11 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:like_button/like_button.dart';
+import 'package:poetry_publisher/comment.dart';
+import 'package:poetry_publisher/screens/Auth%20Screens/login.dart';
 import 'package:poetry_publisher/screens/widgets/main_container.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class test extends StatefulWidget {
   test({Key? key}) : super(key: key);
@@ -42,21 +45,33 @@ class _testState extends State<test> {
                 itemBuilder: (context, index) {
                   var data = snapshot.data?.docs[index];
                   int _itemCount = data!["like"];
-                  var isLiked2 = false;
-                  return
-                      // Text("${data!["poetry"].toString()}");
+                  // bool uuid = data["ll"];
 
-                      maincontainer2(
-                          icon: Icon(isLiked2 == true
-                              ? Icons.favorite_border
-                              : Icons.favorite),
-                          onPressed: () async {
-                            var store = await FirebaseFirestore.instance;
-                            var userrid =
-                                FirebaseAuth.instance.currentUser!.uid;
-                            print("$userrid");
+                  var userrid = FirebaseAuth.instance.currentUser!.uid;
 
-                            isLiked2 = data["uid"]["$userrid"];
+                  Map key = data["uid"];
+                  int buttonSelected = 1;
+
+                  print(key.keys != userrid ? "object" : "talh");
+                  print(userrid);
+
+                  return maincontainer2(
+                      icon: Icon(key.keys.isEmpty
+                          ? Icons.favorite_border
+                          : data["uid.$userrid"] == false
+                              ? Icons.favorite
+                              : Icons.favorite_border),
+                      onPressed: () async {
+                        var store = await FirebaseFirestore.instance;
+                        Map uid = data["uid"];
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        var login3 = prefs.getString("email");
+                        print("object");
+                        if (login3 == null) {
+                          Get.to(login());
+                        } else {
+                          try {
                             if (data["uid"]["$userrid"] == false) {
                               _itemCount--;
 
@@ -67,7 +82,8 @@ class _testState extends State<test> {
                                 "like": _itemCount,
                                 "uid.$userrid": true
                               });
-                            } else if (data["uid"]["$userrid"] == true) {
+                            } else if (data["uid"]["$userrid"] == true ||
+                                uid.keys != userrid) {
                               _itemCount++;
                               await store
                                   .collection("gazal")
@@ -77,34 +93,45 @@ class _testState extends State<test> {
                                 "uid.$userrid": false
                               });
                             }
-                          }, //     // isLiked: isLiked,
-                          // likeCount: data["like"],
-                          // icon: Icon(isLiked2 == true
-                          //     ? Icons.favorite_border
-                          //     : Icons.favorite),
-                          //     onPressed: () async {
-                          //       // isLiked2 = data["uid"]["talha"];
-                          //       // var store = await FirebaseFirestore.instance;
-                          //       // Map o = data["uid"];
-                          //       // if (o.keys != "talha2") {
-                          //       //   store.collection("gazal").doc(data.id).update({
-                          //       //     "uid2": {"talha4": false},
-                          //       //     "uid": {"talha2": false, "talha3": false}
-                          //       //   });
-                          //       // }
-
-                          //       // print(o.keys);
-                          //       // isLiked2 == false ? isLiked2 = true : isLiked2 = false;
-
-                          //       // setState(() {});
-                          //     },
-                          poetry: data["poetry"].toString(),
-                          p_name: data["p_name"].toString());
+                          } catch (e) {
+                            print(e);
+                          }
+                        }
+                      },
+                      poetry: data["poetry"].toString(),
+                      p_name: data["p_name"].toString());
                 });
           }),
     );
   }
 }
+
+// class comment extends StatelessWidget {
+//   comment({Key? key}) : super(key: key);
+//   var com = TextEditingController();
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//         body: Container(
+//       height: 100,
+//       child: CommentBox(
+//         image: Image.asset(
+//           "assets/frantisek.jpg",
+//           height: 64,
+//           width: 64,
+//         ),
+//         controller: com,
+//         onImageRemoved: () {
+//           //on image removed
+//         },
+//         onSend: () {
+//           //on send button pressed
+//           print(com.text);
+//         },
+//       ),
+//     ));
+//   }
+// }
 
 class maincontainer2 extends StatelessWidget {
   String poetry;
@@ -115,11 +142,16 @@ class maincontainer2 extends StatelessWidget {
 
   var icon;
 
+  // var onTap;
+
+  var child;
+
   maincontainer2(
       {Key? key,
       required this.poetry,
       required this.p_name,
       this.icon,
+      this.child,
       this.onPressed})
       : super(key: key);
 
@@ -178,11 +210,9 @@ class maincontainer2 extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(onPressed: onPressed, icon: icon),
-                // LikeButton(
-                //   onTap: onTap,
-                //   likeCount: likeCount,
-                //   // isLiked: isLiked,
-                // ),
+                Container(
+                  child: child,
+                ),
                 IconButton(
                     onPressed: () {
                       Share.share("${poetry}\n\t\t${p_name}");

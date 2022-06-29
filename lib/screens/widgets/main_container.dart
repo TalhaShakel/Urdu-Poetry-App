@@ -83,6 +83,7 @@ class maincontainer extends StatelessWidget {
                     if (login3 == null) {
                       Get.to(login());
                     }
+                    print("object");
                     return login3 != null ? !isLiked : isLiked;
                   },
                 ),
