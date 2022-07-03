@@ -45,67 +45,64 @@ class _gazalState extends State<gazal> {
                 itemCount: snapshot.data!.docs.length,
                 itemBuilder: (context, index) {
                   var data = snapshot.data?.docs[index];
-                  int _itemCount = data!["like"];
-                  bool uuid;
-                  var userrid = FirebaseAuth.instance.currentUser!.uid;
-
-                  Map key = data["uid"];
-                  print(key.keys != userrid ? "object" : "talh");
-                  print(userrid);
-
-                  return maincontainer2(
-                      icon: Icon(key.keys.isEmpty
-                          ? Icons.favorite_border
-                          : data["uid.$userrid"] == false
-                              ? Icons.favorite
-                              : Icons.favorite_border),
-                      onPressed: () async {
-                        var store = await FirebaseFirestore.instance;
-                        Map uid = data["uid"];
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-                        var login3 = prefs.getString("email");
-                        if (login3 == null) {
-                          Get.to(login());
-                        } else {
-                          try {
-                            if (data["uid"]["$userrid"] == false) {
-                              _itemCount--;
-
-                              await store
-                                  .collection("gazal")
-                                  .doc(data.id)
-                                  .update({
-                                "like": _itemCount,
-                                "uid.$userrid": true
-                              });
-                            } else if (data["uid"]["$userrid"] == true ||
-                                uid.keys != userrid) {
-                              _itemCount++;
-                              await store
-                                  .collection("gazal")
-                                  .doc(data.id)
-                                  .update({
-                                "like": _itemCount,
-                                "uid.$userrid": false
-                              });
-                            }
-                          } catch (e) {
-                            print(e);
-                          }
-                        }
-                        print("object");
-                        // return login3 != null ? !isLiked : isLiked;
-                      },
-                      child: IconButton(
-                          onPressed: () {
-                            Get.to(comment());
-                          },
-                          icon: Icon(Icons.comment)),
-                      poetry: data["poetry"].toString(),
+// Text(snapshot.data!.docs[index]["shair"].toString())
+                  return maincontainer(
+                      poetry: data!["poetry"].toString(),
                       p_name: data["p_name"].toString());
                 });
           }),
     );
   }
 }
+// maincontainer2(
+//                       icon: Icon(uuid == false
+//                           ? Icons.favorite
+//                           : Icons.favorite_border),
+//                       onPressed: () async {
+//                         uuid == false ? uuid = true : uuid = false;
+//                         setState(() {});
+
+//                         // var store = await FirebaseFirestore.instance;
+//                         // Map uid = data["uid"];
+//                         // SharedPreferences prefs =
+//                         //     await SharedPreferences.getInstance();
+//                         // var login3 = prefs.getString("email");
+//                         // if (login3 == null) {
+//                         //   Get.to(login());
+//                         // } else {
+//                         //   try {
+//                         //     if (data["uid"]["$userrid"] == false) {
+//                         //       _itemCount--;
+
+//                         //       await store
+//                         //           .collection("gazal")
+//                         //           .doc(data.id)
+//                         //           .update({
+//                         //         "like": _itemCount,
+//                         //         "uid.$userrid": true
+//                         //       });
+//                         //     } else if (data["uid"]["$userrid"] == true ||
+//                         //         uid.keys != userrid) {
+//                         //       _itemCount++;
+//                         //       await store
+//                         //           .collection("gazal")
+//                         //           .doc(data.id)
+//                         //           .update({
+//                         //         "like": _itemCount,
+//                         //         "uid.$userrid": false
+//                         //       });
+//                         //     }
+//                         //   } catch (e) {
+//                         //     print(e);
+//                         //   }
+//                         // }
+//                         print("object");
+//                         // return login3 != null ? !isLiked : isLiked;
+//                       },
+//                       child: IconButton(
+//                           onPressed: () {
+//                             Get.to(comment());
+//                           },
+//                           icon: Icon(Icons.comment)),
+//                       poetry: data["poetry"].toString(),
+//                       p_name: data["p_name"].toString());

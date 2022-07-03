@@ -31,7 +31,7 @@ class _ruffState extends State<ruff> {
         height: 60.0,
         items: <Widget>[
           Icon(Icons.home, size: 30),
-          Icon(Icons.add, size: 30),
+          // Icon(Icons.add, size: 30),
           Icon(Icons.trending_up_outlined, size: 30),
           // Icon(Icons.compare_arrows, size: 30),
         ],
@@ -54,12 +54,12 @@ class _ruffState extends State<ruff> {
       body: _page == 0
           ? home_page()
           : _page == 1
-              ? login3 == null
-                  ? login()
-                  : upload()
-              : _page == 2
-                  ? trending()
-                  : trending(),
+              // ? login3 == null
+              //     ? login()
+              //     : upload()
+              // ?_page == 2
+              ? trending()
+              : home_page(),
     );
   }
 }

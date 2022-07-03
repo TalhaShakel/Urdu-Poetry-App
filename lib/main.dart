@@ -53,78 +53,99 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class home_page extends StatelessWidget {
-  var tabController;
+var login3;
 
+class home_page extends StatefulWidget {
   home_page({Key? key}) : super(key: key);
+
+  @override
+  State<home_page> createState() => _home_pageState();
+}
+
+class _home_pageState extends State<home_page> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    SharedP();
+    super.initState();
+  }
+
+  SharedP() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    login3 = prefs.getString("email");
+    print(login3 + "uuu");
+  }
+
+  var tabController;
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 5,
-      child: Scaffold(
-        drawer: Drawer(
-            // child: profile(),
-            ),
-        appBar: AppBar(
-          backgroundColor: kcolor,
-          title: const Text("شاعری پبلشر"),
-          // leading: ,
-          actions: [
-            IconButton(onPressed: () {}, icon: Icon(Icons.search)),
-            IconButton(
-                onPressed: () async {
-                  SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
+        length: 5,
+        child: Scaffold(
+          drawer: Drawer(
+              // child: profile(),
+              ),
+          appBar: AppBar(
+            backgroundColor: kcolor,
+            title: const Text("شاعری پبلشر"),
+            // leading: ,
+            actions: [
+              IconButton(onPressed: () {}, icon: Icon(Icons.search)),
+              IconButton(
+                  onPressed: () async {
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
 
-                  var login3 = prefs.getString("email");
-                  var userData;
-                  var email;
-                  var name;
-                  if (login3 != null) {
-                    userData = await FirebaseFirestore.instance
-                        .collection('user')
-                        .doc(FirebaseAuth.instance.currentUser!.uid)
-                        .get();
-                    email = userData["email"];
-                    name = userData["displayName"];
-                    print(email);
-                  }
+                    var login3 = prefs.getString("email");
+                    var userData;
+                    var email;
+                    var name;
+                    if (login3 != null) {
+                      userData = await FirebaseFirestore.instance
+                          .collection('user')
+                          .doc(FirebaseAuth.instance.currentUser!.uid)
+                          .get();
+                      email = userData["email"];
+                      name = userData["displayName"];
+                      print(email);
+                    }
 
-                  Get.to(login3 == null
-                      ? login()
-                      : profile(email: email, name: name));
-                },
-                icon: Icon(Icons.person))
-          ],
-          bottom: TabBar(
-              indicatorColor: Colors.white,
-              labelStyle: TextStyle(
-                  fontSize: 18.0, fontFamily: 'Family Name'), //For Selected tab
-              unselectedLabelStyle:
-                  TextStyle(fontSize: 14.0, fontFamily: 'Family Name'),
-              tabs: [
-                Tab(
-                  text: "شعر",
-                ),
-                Tab(
-                  text: "قطعہ",
-                ),
-                Tab(
-                  text: "غزل",
-                ),
-                Tab(
-                  text: "شاعر",
-                ),
-                Tab(
-                  text: "عنوان",
-                )
-              ]),
-        ),
-        body: TabBarView(
-          children: [shair(), kataa(), gazal(), P_name(), unwaan()],
-        ),
-      ),
-    );
+                    Get.to(login3 == null
+                        ? login()
+                        : profile(email: email, name: name));
+                  },
+                  icon: Icon(Icons.person))
+            ],
+            bottom: TabBar(
+                indicatorColor: Colors.white,
+                labelStyle: TextStyle(
+                    fontSize: 18.0,
+                    fontFamily: 'Family Name'), //For Selected tab
+                unselectedLabelStyle:
+                    TextStyle(fontSize: 14.0, fontFamily: 'Family Name'),
+                tabs: [
+                  Tab(
+                    text: "شعر",
+                  ),
+                  Tab(
+                    text: "قطعہ",
+                  ),
+                  Tab(
+                    text: "غزل",
+                  ),
+                  Tab(
+                    text: "شاعر",
+                  ),
+                  Tab(
+                    text: "عنوان",
+                  )
+                ]),
+          ),
+          body: TabBarView(
+            children: [shair(), kataa(), gazal(), P_name(), unwaan()],
+          ),
+          floatingActionButton: float(),
+        ));
   }
 }

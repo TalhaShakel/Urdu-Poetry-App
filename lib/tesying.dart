@@ -5,11 +5,14 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:like_button/like_button.dart';
+import 'package:poetry_publisher/admin_panel/ad_home.dart';
 import 'package:poetry_publisher/comment.dart';
+import 'package:poetry_publisher/main.dart';
 import 'package:poetry_publisher/screens/Auth%20Screens/login.dart';
 import 'package:poetry_publisher/screens/widgets/main_container.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class test extends StatefulWidget {
   test({Key? key}) : super(key: key);
@@ -238,6 +241,56 @@ class maincontainer2 extends StatelessWidget {
               ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class float extends StatelessWidget {
+  const float({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: SpeedDial(
+        // onPress: () {
+        //   print("object");
+        // },
+        // animatedIcon: AnimatedIcons.event_add,
+        icon: Icons.add,
+        children: [
+          SpeedDialChild(
+              child: Icon(Icons.book),
+              label: "Poetry",
+              onTap: () {
+                if (login3 != null) {
+                  Get.to(A_shair());
+                } else {
+                  Get.to(login());
+                }
+              }),
+          SpeedDialChild(
+              child: Icon(Icons.book),
+              label: "Gazal",
+              onTap: () {
+                if (login3 != null) {
+                  Get.to(A_gazal());
+                } else {
+                  Get.to(login());
+                }
+              }),
+          SpeedDialChild(
+              child: Icon(Icons.book),
+              label: "Kata",
+              onTap: () {
+                if (login3 != null) {
+                  Get.to(A_kata());
+                } else {
+                  Get.to(login());
+                }
+                // Get.to(A_kata());
+              }),
         ],
       ),
     );

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:like_button/like_button.dart';
+import 'package:poetry_publisher/comment.dart';
 import 'package:poetry_publisher/screens/Auth%20Screens/login.dart';
 import 'package:poetry_publisher/screens/Auth%20Screens/signing.dart';
 import 'package:share_plus/share_plus.dart';
@@ -17,8 +18,14 @@ class maincontainer extends StatelessWidget {
 
   var onTap;
 
+  var child;
+
   maincontainer(
-      {Key? key, required this.poetry, required this.p_name, this.onTap})
+      {Key? key,
+      required this.poetry,
+      required this.p_name,
+      this.child,
+      this.onTap})
       : super(key: key);
 
   @override
@@ -86,6 +93,13 @@ class maincontainer extends StatelessWidget {
                     print("object");
                     return login3 != null ? !isLiked : isLiked;
                   },
+                ),
+                Container(
+                  child: IconButton(
+                      onPressed: () {
+                        Get.to(comment());
+                      },
+                      icon: Icon(Icons.comment)),
                 ),
                 // Container(height: 10, width: 10, child: CommentBox()),
                 IconButton(
