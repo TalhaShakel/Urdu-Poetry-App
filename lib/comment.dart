@@ -1,131 +1,161 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:comment_box/comment/comment.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class comment extends StatelessWidget {
-  comment({Key? key}) : super(key: key);
+  String? postid;
+  comment({Key? key, this.postid}) : super(key: key);
   var com = TextEditingController();
+  String? data;
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return Scaffold(
-        body: Column(
-      children: [
-        Container(
-          height: 100,
-          child: Comment_Box(
-            image: Image.asset(
-              "assets/frantisek.jpg",
-              height: 64,
-              width: 64,
-            ),
-            controller: com,
-            onImageRemoved: () {
-              //on image removed
-            },
-            onSend: () {
-              //on send button pressed
-              print(com.text);
-            },
-          ),
+      appBar: AppBar(
+        // backgroundColor: mobileBackgroundColor,
+        title: const Text(
+          'Comments',
         ),
-      ],
-    ));
+        centerTitle: false,
+      ),
+      body: StreamBuilder(
+          stream: FirebaseFirestore.instance
+              .collection('gazal')
+              .doc(postid.toString())
+              .collection('comments')
+              .snapshots(),
+          builder: (context, AsyncSnapshot snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            return ListView.builder(
+                itemCount: snapshot.data!.docs.length,
+                itemBuilder: (ctx, inde) {
+                  var data1 = snapshot.data!.docs[inde];
+                  return CommentCard(
+                    snap: data1,
+                  );
+                });
+          }),
+      bottomNavigationBar: SafeArea(
+          child: Container(
+        height: kToolbarHeight,
+        margin:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        padding: const EdgeInsets.only(left: 16, right: 8),
+        child: Row(
+          children: [
+            CircleAvatar(
+              backgroundImage: NetworkImage(
+                  "https://cdn.dribbble.com/users/1577045/screenshots/4914645/media/028d394ffb00cb7a4b2ef9915a384fd9.png?compress=1&resize=400x300&vertical=top"),
+              radius: 18,
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 16, right: 8),
+                child: TextField(
+                  controller: com,
+                  decoration: InputDecoration(
+                    hintText: 'Comment as ',
+                    border: InputBorder.none,
+                  ),
+                ),
+              ),
+            ),
+            InkWell(
+              onTap: () async {
+                var name = await FirebaseAuth.instance.currentUser!.email;
+                await FirebaseFirestore.instance
+                    .collection('gazal')
+                    .doc(postid.toString())
+                    .collection('comments')
+                    .add({
+                  "comment": com.text.toString(),
+                  'datePublished': DateTime.now(),
+                  "name": name
+                }).then((value) => com.clear());
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                child: const Text(
+                  'Post',
+                  style: TextStyle(color: Colors.blue),
+                ),
+              ),
+            )
+          ],
+        ),
+      )),
+    );
   }
 }
 
-class Comment_Box extends StatefulWidget {
-  Widget? image;
-
-  var controller;
-
-  var onSend;
-
-  var inputRadius;
-  var onImageRemoved;
-
-  Comment_Box({
-    Key? key,
-    this.image,
-    this.controller,
-    this.inputRadius,
-    this.onSend,
-    this.onImageRemoved,
-  }) : super(key: key);
-
-  @override
-  _CommentBoxState createState() => _CommentBoxState();
-}
-
-class _CommentBoxState extends State<Comment_Box> {
-  Widget? image;
-
-  @override
-  void initState() {
-    image = widget.image;
-    super.initState();
-  }
+class CommentCard extends StatelessWidget {
+  final snap;
+  const CommentCard({Key? key, required this.snap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Divider(
-          height: 1,
-          color: Colors.grey[300],
-          thickness: 1,
-        ),
-        SizedBox(height: 20),
-        // if (image != null)
-        //   _removable(
-        //     context,
-        //     _imageView(context),
-        //   ),
-        if (widget.controller != null)
-          TextFormField(
-            controller: widget.controller,
-            decoration: InputDecoration(
-              suffixIcon: IconButton(
-                icon: Icon(
-                  Icons.send,
-                  color: Theme.of(context).primaryColor,
-                ),
-                onPressed: widget.onSend,
-              ),
-              filled: true,
-              border: OutlineInputBorder(
-                borderSide: BorderSide.none,
-                borderRadius: widget.inputRadius ?? BorderRadius.circular(32),
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+      child: Row(
+        children: [
+          CircleAvatar(
+            backgroundImage: NetworkImage(
+                "https://cdn.dribbble.com/users/1577045/screenshots/4914645/media/028d394ffb00cb7a4b2ef9915a384fd9.png?compress=1&resize=400x300&vertical=top"),
+            radius: 18,
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // RichText(
+                  //   text: TextSpan(
+                  //     children: [
+                  //       TextSpan(
+                  //           text: snap.data()['name'],
+                  //           style: const TextStyle(
+                  //             fontWeight: FontWeight.bold,
+                  //           )),
+                  //       TextSpan(
+                  //         text: ' ${snap}',
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+                  Text(snap.data()['name']),
+                  Text(snap.data()['comment']),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      DateFormat.yMMMd().format(
+                        snap.data()['datePublished'].toDate(),
+                      ),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  )
+                ],
               ),
             ),
           ),
-      ],
-    );
-  }
-
-  Widget _removable(BuildContext context, Widget child) {
-    return Stack(
-      alignment: Alignment.topRight,
-      children: [
-        child,
-        IconButton(
-          icon: Icon(Icons.clear),
-          onPressed: () {
-            setState(() {
-              image = null;
-              widget.onImageRemoved();
-            });
-          },
-        )
-      ],
-    );
-  }
-
-  Widget _imageView(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(16),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(26),
-        child: image,
+          Container(
+            padding: const EdgeInsets.all(8),
+            child: const Icon(
+              Icons.favorite,
+              size: 16,
+            ),
+          )
+        ],
       ),
     );
   }

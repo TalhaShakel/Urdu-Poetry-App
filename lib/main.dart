@@ -73,7 +73,7 @@ class _home_pageState extends State<home_page> {
   SharedP() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     login3 = prefs.getString("email");
-    print(login3 + "uuu");
+    print(login3);
   }
 
   var tabController;

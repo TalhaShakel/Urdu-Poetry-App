@@ -16,16 +16,24 @@ class maincontainer extends StatelessWidget {
 
   String p_name;
 
-  var onTap;
-
   var child;
+
+  var icon;
+
+  var onPressed;
+
+  var likecount;
+  var ontap;
 
   maincontainer(
       {Key? key,
       required this.poetry,
       required this.p_name,
+      this.ontap,
+      this.icon,
+      this.onPressed,
       this.child,
-      this.onTap})
+      this.likecount})
       : super(key: key);
 
   @override
@@ -80,26 +88,17 @@ class maincontainer extends StatelessWidget {
                 border: Border.all(color: Color.fromARGB(255, 217, 214, 214)),
                 borderRadius: BorderRadius.all(Radius.circular(10.0))),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                LikeButton(
-                  onTap: (isLiked) async {
-                    SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                    var login3 = prefs.getString("email");
-                    if (login3 == null) {
-                      Get.to(login());
-                    }
-                    print("object");
-                    return login3 != null ? !isLiked : isLiked;
-                  },
-                ),
+                IconButton(onPressed: onPressed, icon: icon),
+                Text("$likecount"),
+                // SizedBox(
+                //   width: size.width * 0.45,
+                // ),
+                Spacer(),
                 Container(
-                  child: IconButton(
-                      onPressed: () {
-                        Get.to(comment());
-                      },
-                      icon: Icon(Icons.comment)),
+                  child:
+                      IconButton(onPressed: ontap, icon: Icon(Icons.comment)),
                 ),
                 // Container(height: 10, width: 10, child: CommentBox()),
                 IconButton(
