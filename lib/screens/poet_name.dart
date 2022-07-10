@@ -7,7 +7,7 @@ import 'package:poetry_publisher/screens/single%20Poet/single_poet.dart';
 class P_name extends StatelessWidget {
   P_name({Key? key}) : super(key: key);
   final Stream<QuerySnapshot> _usersStream =
-      FirebaseFirestore.instance.collection('poetry').snapshots();
+      FirebaseFirestore.instance.collection('post').snapshots();
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;

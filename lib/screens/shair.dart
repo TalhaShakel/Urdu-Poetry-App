@@ -14,21 +14,21 @@ import 'package:poetry_publisher/screens/widgets/main_container.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-Color kcolor = Color.fromARGB(255, 7, 73, 206);
-
 class shair extends StatelessWidget {
   var uid;
+
+  var type;
   likepost(String postid, List like) async {
     uid = await FirebaseAuth.instance.currentUser!.uid;
 
     var Firestore = await FirebaseFirestore.instance;
     try {
       if (like.contains(uid)) {
-        await Firestore.collection('gazal').doc(postid).update({
+        await Firestore.collection('post').doc(postid).update({
           "like": FieldValue.arrayRemove([uid])
         });
       } else {
-        await Firestore.collection('gazal').doc(postid).update({
+        await Firestore.collection('post').doc(postid).update({
           "like": FieldValue.arrayUnion([uid])
         });
       }
@@ -37,9 +37,9 @@ class shair extends StatelessWidget {
     }
   }
 
-  shair({Key? key}) : super(key: key);
+  shair({Key? key, required this.type}) : super(key: key);
   final Stream<QuerySnapshot> _usersStream =
-      FirebaseFirestore.instance.collection('gazal').snapshots();
+      FirebaseFirestore.instance.collection('post').snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +55,7 @@ class shair extends StatelessWidget {
             }
 
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Text("Loading");
+              return Center(child: CircularProgressIndicator());
             }
 
             return ListView.builder(
@@ -63,37 +63,47 @@ class shair extends StatelessWidget {
                 // physics: NeverScrollableScrollPhysics(),
                 itemCount: snapshot.data!.docs.length,
                 itemBuilder: (context, index) {
-                  var data = snapshot.data?.docs[index];
-                  List like = data!["like"];
-// Text(snapshot.data!.docs[index]["shair"].toString())
-                  return Column(
-                    children: [
-                      maincontainer(
-                        ontap: () {
-                          Get.to(comment(
-                            postid: data.id.toString(),
-                          ));
-                        },
-                        likecount: like.length.toString(),
-                        icon: Icon(like.contains(uid)
-                            ? Icons.favorite
-                            : Icons.favorite_border),
-                        onPressed: () async {
-                          SharedPreferences prefs =
-                              await SharedPreferences.getInstance();
-                          var login3 = prefs.getString("email");
-                          if (login3 == null) {
-                            Get.to(login());
-                          } else {
-                            likepost(data.id.toString(), data["like"]);
-                          }
-                        },
-                        poetry: data["poetry"].toString(),
-                        p_name: data["p_name"].toString(),
-                      ),
-                      // Text(data.data().toString())
-                    ],
-                  );
+                  if (snapshot.data == null) {
+                    return Center(child: CircularProgressIndicator());
+                  } else {
+                    var data;
+                    List? like;
+                    if (snapshot.data?.docs[index]["type"] == "$type") {
+                      data = snapshot.data?.docs[index];
+                      like = data["like"];
+                    }
+
+                    return data != null
+                        ? Column(
+                            children: [
+                              maincontainer(
+                                ontap: () {
+                                  Get.to(comment(
+                                    postid: data.id.toString(),
+                                  ));
+                                },
+                                likecount: like!.length.toString(),
+                                icon: Icon(like.contains(uid)
+                                    ? Icons.favorite
+                                    : Icons.favorite_border),
+                                onPressed: () async {
+                                  SharedPreferences prefs =
+                                      await SharedPreferences.getInstance();
+                                  var login3 = prefs.getString("email");
+                                  if (login3 == null) {
+                                    Get.to(login());
+                                  } else {
+                                    likepost(data.id.toString(), data["like"]);
+                                  }
+                                },
+                                poetry: data["poetry"].toString(),
+                                p_name: data["p_name"].toString(),
+                              ),
+                              // Text(data.data().toString())
+                            ],
+                          )
+                        : Container();
+                  }
                 });
           }),
     );

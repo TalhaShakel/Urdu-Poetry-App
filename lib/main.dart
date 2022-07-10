@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:poetry_publisher/admin_panel/ad_home.dart';
+import 'package:poetry_publisher/constraint.dart';
 import 'package:poetry_publisher/ruff.dart';
 import 'package:poetry_publisher/screens/Auth%20Screens/login.dart';
 import 'package:poetry_publisher/screens/Auth%20Screens/signing.dart';
@@ -83,9 +84,9 @@ class _home_pageState extends State<home_page> {
     return DefaultTabController(
         length: 5,
         child: Scaffold(
-          drawer: Drawer(
-              // child: profile(),
-              ),
+          // drawer: Drawer(
+          //     // child: profile(),
+          //     ),
           appBar: AppBar(
             backgroundColor: kcolor,
             title: const Text("شاعری پبلشر"),
@@ -143,7 +144,13 @@ class _home_pageState extends State<home_page> {
                 ]),
           ),
           body: TabBarView(
-            children: [shair(), kataa(), gazal(), P_name(), unwaan()],
+            children: [
+              shair(type: "poetry"),
+              shair(type: "kata"),
+              shair(type: "gazal"),
+              P_name(),
+              unwaan()
+            ],
           ),
           floatingActionButton: float(),
         ));

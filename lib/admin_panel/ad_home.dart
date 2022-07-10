@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:poetry_publisher/constraint.dart';
+import 'package:poetry_publisher/main.dart';
 
 class A_home extends StatelessWidget {
   const A_home({Key? key}) : super(key: key);
@@ -14,21 +16,30 @@ class A_home extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
-                onPressed: () {
-                  Get.to(A_shair());
-                },
-                child: Text("Poetry")),
-            ElevatedButton(
-                onPressed: () {
-                  Get.to(A_gazal());
-                },
-                child: Text("Gazal")),
-            ElevatedButton(
-                onPressed: () {
-                  Get.to(A_kata());
-                },
-                child: Text("Kata"))
+            Container(
+              width: 200,
+              child: ElevatedButton(
+                  onPressed: () {
+                    Get.to(A_shair());
+                  },
+                  child: Text("Poetry")),
+            ),
+            Container(
+              width: 200,
+              child: ElevatedButton(
+                  onPressed: () {
+                    Get.to(A_gazal());
+                  },
+                  child: Text("Gazal")),
+            ),
+            Container(
+              width: 200,
+              child: ElevatedButton(
+                  onPressed: () {
+                    Get.to(A_kata());
+                  },
+                  child: Text("Kata")),
+            )
           ],
         ),
       ),
@@ -42,18 +53,24 @@ class A_shair extends StatelessWidget {
   A_shair({Key? key}) : super(key: key);
   var poetry = TextEditingController();
   var name = TextEditingController();
+  var unwan = TextEditingController();
 
   userStore() async {
     FirebaseFirestore db = FirebaseFirestore.instance;
     // String? uid = await FirebaseAuth.instance.currentUser!.uid;
 
     try {
-      await db
-          .collection("poetry")
-          .add({"p_name": name.text.trim(), "poetry": poetry.text.trim()}).then(
-              (value) {
+      await db.collection("post").add({
+        "p_name": name.text.trim(),
+        "poetry": poetry.text.trim(),
+        "unwan": unwan.text.trim(),
+        "like": [],
+        "uid": {},
+        "type": "poetry"
+      }).then((value) {
         poetry.clear();
         name.clear();
+        unwan.clear();
       });
       Fluttertoast.showToast(
           msg: "Posted",
@@ -83,82 +100,63 @@ class A_shair extends StatelessWidget {
 
     return SafeArea(
       child: Scaffold(
-        body: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              Container(
-                  margin: const EdgeInsets.all(15.0),
-                  padding: const EdgeInsets.all(30.0),
-                  // height: size.height * 0.2,
-                  width: size.width * 0.9,
-                  decoration: BoxDecoration(
-                      // image: DecorationImage(
-                      //   image: AssetImage('assets/frantisek.jpg'),
-                      //   fit: BoxFit.fill,
-                      // ),
-                      color: Colors.white,
-                      border: Border.all(color: Colors.black),
-                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                  child: Directionality(
-                      textDirection: TextDirection.rtl,
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'enter a valid Poetry';
-                          }
-                          return null;
-                        },
-                        controller: poetry,
-                        keyboardType: TextInputType.multiline,
-                        decoration: const InputDecoration(
-                          border: const UnderlineInputBorder(),
-                          labelText: "Poetry",
-                        ),
-                        maxLines: null,
-                        // maxLength: 8,
-                      ))),
-              Container(
-                  margin: const EdgeInsets.all(15.0),
-                  padding: const EdgeInsets.all(30.0),
-                  // height: size.height * 0.2,
-                  width: size.width * 0.9,
-                  decoration: BoxDecoration(
-                      // image: DecorationImage(
-                      //   image: AssetImage('assets/frantisek.jpg'),
-                      //   fit: BoxFit.fill,
-                      // ),
-                      color: Colors.white,
-                      border: Border.all(color: Colors.black),
-                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                  child: Directionality(
-                      textDirection: TextDirection.rtl,
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'enter a valid name';
-                          }
-                          return null;
-                        },
-                        controller: name,
-                        keyboardType: TextInputType.multiline,
-                        decoration: const InputDecoration(
-                          border: const UnderlineInputBorder(),
-                          labelText: "Poet Name",
-                        ),
-
-                        maxLines: null,
-                        // maxLength: 8,
-                      ))),
-              ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      userStore();
-                    }
-                    // if (_) userStore();
-                  },
-                  child: Text("Post"))
-            ],
+        body: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                Container(
+                    margin: const EdgeInsets.all(15.0),
+                    padding: const EdgeInsets.all(30.0),
+                    // height: size.height * 0.2,
+                    width: size.width * 0.9,
+                    decoration: BoxDecoration(
+                        // image: DecorationImage(
+                        //   image: AssetImage('assets/frantisek.jpg'),
+                        //   fit: BoxFit.fill,
+                        // ),
+                        color: Colors.white,
+                        border: Border.all(color: Colors.black),
+                        borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                    child: Directionality(
+                        textDirection: TextDirection.rtl,
+                        child: TextFormField(
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'enter a valid Poetry';
+                            }
+                            return null;
+                          },
+                          controller: poetry,
+                          keyboardType: TextInputType.multiline,
+                          decoration: const InputDecoration(
+                            border: const UnderlineInputBorder(),
+                            labelText: "Poetry",
+                          ),
+                          maxLines: null,
+                          // maxLength: 8,
+                        ))),
+                main_textfield(size: size, name: name, labelText: "poet name"),
+                main_textfield(
+                  size: size,
+                  name: unwan,
+                  labelText: "Unwan",
+                ),
+                ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        try {
+                          userStore();
+                          Get.to(home_page());
+                        } catch (e) {
+                          showSnackBar(context, e.toString());
+                        }
+                      }
+                      // if (_) userStore();
+                    },
+                    child: Text("Post"))
+              ],
+            ),
           ),
         ),
       ),
@@ -166,8 +164,60 @@ class A_shair extends StatelessWidget {
   }
 }
 
+class main_textfield extends StatelessWidget {
+  var labelText;
+
+  main_textfield({
+    Key? key,
+    required this.size,
+    required this.labelText,
+    required this.name,
+  }) : super(key: key);
+
+  final Size size;
+  final TextEditingController name;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        margin: const EdgeInsets.all(15.0),
+        padding: const EdgeInsets.all(30.0),
+        // height: size.height * 0.2,
+        width: size.width * 0.9,
+        decoration: BoxDecoration(
+            // image: DecorationImage(
+            //   image: AssetImage('assets/frantisek.jpg'),
+            //   fit: BoxFit.fill,
+            // ),
+            color: Colors.white,
+            border: Border.all(color: Colors.black),
+            borderRadius: BorderRadius.all(Radius.circular(10.0))),
+        child: Directionality(
+            textDirection: TextDirection.rtl,
+            child: TextFormField(
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'enter a valid name';
+                }
+                return null;
+              },
+              controller: name,
+              keyboardType: TextInputType.multiline,
+              decoration: InputDecoration(
+                border: UnderlineInputBorder(),
+                labelText: labelText.toString(),
+              ),
+
+              maxLines: null,
+              // maxLength: 8,
+            )));
+  }
+}
+
 class A_kata extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  var unwan = TextEditingController();
 
   A_kata({Key? key}) : super(key: key);
   var poetry = TextEditingController();
@@ -178,12 +228,17 @@ class A_kata extends StatelessWidget {
     // String? uid = await FirebaseAuth.instance.currentUser!.uid;
 
     try {
-      await db
-          .collection("kata")
-          .add({"p_name": name.text.trim(), "poetry": poetry.text.trim()}).then(
-              (value) {
+      await db.collection("post").add({
+        "p_name": name.text.trim(),
+        "poetry": poetry.text.trim(),
+        "unwan": unwan.text.trim(),
+        "like": [],
+        "uid": {},
+        "type": "kata"
+      }).then((value) {
         poetry.clear();
         name.clear();
+        unwan.clear();
       });
       Fluttertoast.showToast(
           msg: "Posted",
@@ -213,82 +268,93 @@ class A_kata extends StatelessWidget {
 
     return SafeArea(
       child: Scaffold(
-        body: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              Container(
-                  margin: const EdgeInsets.all(15.0),
-                  padding: const EdgeInsets.all(30.0),
-                  // height: size.height * 0.2,
-                  width: size.width * 0.9,
-                  decoration: BoxDecoration(
-                      // image: DecorationImage(
-                      //   image: AssetImage('assets/frantisek.jpg'),
-                      //   fit: BoxFit.fill,
-                      // ),
-                      color: Colors.white,
-                      border: Border.all(color: Colors.black),
-                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                  child: Directionality(
-                      textDirection: TextDirection.rtl,
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'enter a valid Poetry';
-                          }
-                          return null;
-                        },
-                        controller: poetry,
-                        keyboardType: TextInputType.multiline,
-                        decoration: const InputDecoration(
-                          border: const UnderlineInputBorder(),
-                          labelText: "Kata",
-                        ),
-                        maxLines: null,
-                        // maxLength: 8,
-                      ))),
-              Container(
-                  margin: const EdgeInsets.all(15.0),
-                  padding: const EdgeInsets.all(30.0),
-                  // height: size.height * 0.2,
-                  width: size.width * 0.9,
-                  decoration: BoxDecoration(
-                      // image: DecorationImage(
-                      //   image: AssetImage('assets/frantisek.jpg'),
-                      //   fit: BoxFit.fill,
-                      // ),
-                      color: Colors.white,
-                      border: Border.all(color: Colors.black),
-                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                  child: Directionality(
-                      textDirection: TextDirection.rtl,
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'enter a valid NAme';
-                          }
-                          return null;
-                        },
-                        controller: name,
-                        keyboardType: TextInputType.multiline,
-                        decoration: const InputDecoration(
-                          border: const UnderlineInputBorder(),
-                          labelText: "Poet Name",
-                        ),
+        body: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                Container(
+                    margin: const EdgeInsets.all(15.0),
+                    padding: const EdgeInsets.all(30.0),
+                    // height: size.height * 0.2,
+                    width: size.width * 0.9,
+                    decoration: BoxDecoration(
+                        // image: DecorationImage(
+                        //   image: AssetImage('assets/frantisek.jpg'),
+                        //   fit: BoxFit.fill,
+                        // ),
+                        color: Colors.white,
+                        border: Border.all(color: Colors.black),
+                        borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                    child: Directionality(
+                        textDirection: TextDirection.rtl,
+                        child: TextFormField(
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'enter a valid Poetry';
+                            }
+                            return null;
+                          },
+                          controller: poetry,
+                          keyboardType: TextInputType.multiline,
+                          decoration: const InputDecoration(
+                            border: const UnderlineInputBorder(),
+                            labelText: "Kata",
+                          ),
+                          maxLines: null,
+                          // maxLength: 8,
+                        ))),
+                Container(
+                    margin: const EdgeInsets.all(15.0),
+                    padding: const EdgeInsets.all(30.0),
+                    // height: size.height * 0.2,
+                    width: size.width * 0.9,
+                    decoration: BoxDecoration(
+                        // image: DecorationImage(
+                        //   image: AssetImage('assets/frantisek.jpg'),
+                        //   fit: BoxFit.fill,
+                        // ),
+                        color: Colors.white,
+                        border: Border.all(color: Colors.black),
+                        borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                    child: Directionality(
+                        textDirection: TextDirection.rtl,
+                        child: TextFormField(
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'enter a valid NAme';
+                            }
+                            return null;
+                          },
+                          controller: name,
+                          keyboardType: TextInputType.multiline,
+                          decoration: const InputDecoration(
+                            border: const UnderlineInputBorder(),
+                            labelText: "Poet Name",
+                          ),
 
-                        maxLines: null,
-                        // maxLength: 8,
-                      ))),
-              ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      userStore();
-                    }
-                    userStore();
-                  },
-                  child: Text("Post"))
-            ],
+                          maxLines: null,
+                          // maxLength: 8,
+                        ))),
+                main_textfield(
+                  size: size,
+                  name: unwan,
+                  labelText: "Unwan",
+                ),
+                ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        try {
+                          userStore();
+                          Get.to(home_page());
+                        } catch (e) {
+                          showSnackBar(context, e.toString());
+                        }
+                      }
+                    },
+                    child: Text("Post"))
+              ],
+            ),
           ),
         ),
       ),
@@ -297,6 +363,8 @@ class A_kata extends StatelessWidget {
 }
 
 class A_gazal extends StatelessWidget {
+  var unwan = TextEditingController();
+
   A_gazal({Key? key}) : super(key: key);
   var poetry = TextEditingController();
   var name = TextEditingController();
@@ -306,12 +374,17 @@ class A_gazal extends StatelessWidget {
     // String? uid = await FirebaseAuth.instance.currentUser!.uid;
 
     try {
-      await db
-          .collection("gazal")
-          .add({"p_name": name.text.trim(), "poetry": poetry.text.trim()}).then(
-              (value) {
+      await db.collection("post").add({
+        "p_name": name.text.trim(),
+        "poetry": poetry.text.trim(),
+        "unwan": unwan.text.trim(),
+        "like": [],
+        "uid": {},
+        "type": "gazal"
+      }).then((value) {
         poetry.clear();
         name.clear();
+        unwan.clear();
       });
       Fluttertoast.showToast(
           msg: "Posted",
@@ -343,81 +416,93 @@ class A_gazal extends StatelessWidget {
 
     return SafeArea(
       child: Scaffold(
-        body: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              Container(
-                  margin: const EdgeInsets.all(15.0),
-                  padding: const EdgeInsets.all(30.0),
-                  // height: size.height * 0.2,
-                  width: size.width * 0.9,
-                  decoration: BoxDecoration(
-                      // image: DecorationImage(
-                      //   image: AssetImage('assets/frantisek.jpg'),
-                      //   fit: BoxFit.fill,
-                      // ),
-                      color: Colors.white,
-                      border: Border.all(color: Colors.black),
-                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                  child: Directionality(
-                      textDirection: TextDirection.rtl,
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'enter a valid Poetry';
-                          }
-                          return null;
-                        },
-                        controller: poetry,
-                        keyboardType: TextInputType.multiline,
-                        decoration: const InputDecoration(
-                          border: const UnderlineInputBorder(),
-                          labelText: "Gazal",
-                        ),
-                        maxLines: null,
-                        // maxLength: 8,
-                      ))),
-              Container(
-                  margin: const EdgeInsets.all(15.0),
-                  padding: const EdgeInsets.all(30.0),
-                  // height: size.height * 0.2,
-                  width: size.width * 0.9,
-                  decoration: BoxDecoration(
-                      // image: DecorationImage(
-                      //   image: AssetImage('assets/frantisek.jpg'),
-                      //   fit: BoxFit.fill,
-                      // ),
-                      color: Colors.white,
-                      border: Border.all(color: Colors.black),
-                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                  child: Directionality(
-                      textDirection: TextDirection.rtl,
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'enter a valid Name';
-                          }
-                          return null;
-                        },
-                        controller: name,
-                        keyboardType: TextInputType.multiline,
-                        decoration: const InputDecoration(
-                          border: const UnderlineInputBorder(),
-                          labelText: "Poet Name",
-                        ),
+        body: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                Container(
+                    margin: const EdgeInsets.all(15.0),
+                    padding: const EdgeInsets.all(30.0),
+                    // height: size.height * 0.2,
+                    width: size.width * 0.9,
+                    decoration: BoxDecoration(
+                        // image: DecorationImage(
+                        //   image: AssetImage('assets/frantisek.jpg'),
+                        //   fit: BoxFit.fill,
+                        // ),
+                        color: Colors.white,
+                        border: Border.all(color: Colors.black),
+                        borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                    child: Directionality(
+                        textDirection: TextDirection.rtl,
+                        child: TextFormField(
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'enter a valid Poetry';
+                            }
+                            return null;
+                          },
+                          controller: poetry,
+                          keyboardType: TextInputType.multiline,
+                          decoration: const InputDecoration(
+                            border: const UnderlineInputBorder(),
+                            labelText: "Gazal",
+                          ),
+                          maxLines: null,
+                          // maxLength: 8,
+                        ))),
+                Container(
+                    margin: const EdgeInsets.all(15.0),
+                    padding: const EdgeInsets.all(30.0),
+                    // height: size.height * 0.2,
+                    width: size.width * 0.9,
+                    decoration: BoxDecoration(
+                        // image: DecorationImage(
+                        //   image: AssetImage('assets/frantisek.jpg'),
+                        //   fit: BoxFit.fill,
+                        // ),
+                        color: Colors.white,
+                        border: Border.all(color: Colors.black),
+                        borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                    child: Directionality(
+                        textDirection: TextDirection.rtl,
+                        child: TextFormField(
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'enter a valid Name';
+                            }
+                            return null;
+                          },
+                          controller: name,
+                          keyboardType: TextInputType.multiline,
+                          decoration: const InputDecoration(
+                            border: const UnderlineInputBorder(),
+                            labelText: "Poet Name",
+                          ),
 
-                        maxLines: null,
-                        // maxLength: 8,
-                      ))),
-              ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      userStore();
-                    }
-                  },
-                  child: Text("Post"))
-            ],
+                          maxLines: null,
+                          // maxLength: 8,
+                        ))),
+                main_textfield(
+                  size: size,
+                  name: unwan,
+                  labelText: "Unwan",
+                ),
+                ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        try {
+                          userStore();
+                          Get.to(home_page());
+                        } catch (e) {
+                          showSnackBar(context, e.toString());
+                        }
+                      }
+                    },
+                    child: Text("Post"))
+              ],
+            ),
           ),
         ),
       ),
