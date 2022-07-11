@@ -47,6 +47,33 @@ class maincontainer extends StatefulWidget {
 
 class _maincontainerState extends State<maincontainer> {
   Uint8List? bt;
+  int _counter = 0;
+  List imglist = [
+    "assets/henry.jpg",
+    "assets/henry1.jpg",
+    "assets/henry2.jpg",
+    "assets/henry3.jpg",
+    "assets/henry4.jpg",
+    "assets/henry5.jpg",
+    "assets/henry6.jpg",
+    "assets/henry7.jpg",
+    "assets/henry8.jpg"
+  ];
+  void _incrementCounter() {
+    setState(() {
+      // This call to setState tells the Flutter framework that something has
+      // changed in this State, which causes it to rerun the build method below
+      // so that the display can reflect the updated values. If we changed
+      // _counter without calling setState(), then the build method would not be
+      // called again, and so nothing would appear to happen.
+      if (_counter < 8) {
+        _counter++;
+        print(_counter);
+      } else {
+        _counter = 0;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +82,13 @@ class _maincontainerState extends State<maincontainer> {
 
     return Column(
       children: [
-        xonvertimg(size: size, poetry: widget.poetry, p_name: widget.p_name),
+        GestureDetector(
+            onTap: _incrementCounter,
+            child: xonvertimg(
+                img: "${imglist[_counter]}",
+                size: size,
+                poetry: widget.poetry,
+                p_name: widget.p_name)),
         if (bt != null)
           Image.memory(
             bt!,
@@ -99,6 +132,7 @@ class _maincontainerState extends State<maincontainer> {
                     final control = ScreenshotController();
                     final c = await control
                         .captureFromWidget(xonvertimg(
+                      img: "${imglist[_counter]}",
                       poetry: widget.poetry,
                       p_name: widget.p_name,
                       size: size,
@@ -156,11 +190,14 @@ class _maincontainerState extends State<maincontainer> {
 class xonvertimg extends StatelessWidget {
   double? height;
 
+  var img;
+
   xonvertimg({
     Key? key,
     this.size,
     required this.poetry,
     this.height,
+    this.img,
     required this.p_name,
   }) : super(key: key);
 
@@ -179,8 +216,8 @@ class xonvertimg extends StatelessWidget {
       width: size!.width * 0.9,
       decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/henry.jpg'),
-            fit: BoxFit.fill,
+            image: AssetImage('$img'),
+            fit: BoxFit.cover,
           ),
           color: Colors.white,
           border: Border.all(color: Colors.black),

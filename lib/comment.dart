@@ -2,7 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:comment_box/comment/comment.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:poetry_publisher/main.dart';
+import 'package:poetry_publisher/screens/Auth%20Screens/login.dart';
 
 class comment extends StatelessWidget {
   String? postid;
@@ -68,16 +71,20 @@ class comment extends StatelessWidget {
             ),
             InkWell(
               onTap: () async {
-                var name = await FirebaseAuth.instance.currentUser!.email;
-                await FirebaseFirestore.instance
-                    .collection('gazal')
-                    .doc(postid.toString())
-                    .collection('comments')
-                    .add({
-                  "comment": com.text.toString(),
-                  'datePublished': DateTime.now(),
-                  "name": name
-                }).then((value) => com.clear());
+                if (login3 != null) {
+                  var name = await FirebaseAuth.instance.currentUser!.email;
+                  await FirebaseFirestore.instance
+                      .collection('gazal')
+                      .doc(postid.toString())
+                      .collection('comments')
+                      .add({
+                    "comment": com.text.toString(),
+                    'datePublished': DateTime.now(),
+                    "name": name
+                  }).then((value) => com.clear());
+                } else {
+                  Get.to(login());
+                }
               },
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
